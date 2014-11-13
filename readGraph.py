@@ -92,7 +92,7 @@ def readGraph():
                 nid_u = userDict[uid]
                 G.AddEdge(nid_e, nid_u)
                 G.AddEdge(nid_u, nid_e)
-    print missed, add
+    #print missed, add
     with open('data/user_friends.csv', 'r') as f:
         f.readline()
         csvreader = csv.reader(f)
@@ -108,6 +108,7 @@ def readGraph():
                 nid_u2 = userDict[uid]
                 G.AddEdge(nid_u1, nid_u2)
                 G.AddEdge(nid_u2, nid_u1)
-    print missed, add
+    #print missed, add
+    #print G.GetNodes(), G.GetEdges()
     return G
 

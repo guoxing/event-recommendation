@@ -1,0 +1,4 @@
+# event nodes: 24144
+# user nodes: 38209
+# user-user edges: 217555
+# event-user edges: 7602
