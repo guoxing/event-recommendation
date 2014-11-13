@@ -1,0 +1,7 @@
+user network info:
+  Nodes:                    683240
+  Edges:                    1187518
+  Zero Deg Nodes:           327747
+  Zero InDeg Nodes:         327747
+  Zero OutDeg Nodes:        327747
+  NonZero In-Out Deg Nodes: 355493

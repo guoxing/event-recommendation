@@ -108,3 +108,25 @@ def readGraph():
     #print G.GetNodes(), G.GetEdges()
     return G
 
+def readUserGraph():
+    G = snap.PUNGraph.New()
+    userDict = readUserDict()
+    for uid, nid_u in userDict.items():
+        G.AddNode(nid_u)
+    with open('data/user_friends.csv', 'r') as f:
+        f.readline()
+        csvreader = csv.reader(f)
+        missed = 0
+        add = 0
+        for row in csvreader:
+            nid_u1 = userDict[row[0]]
+            for uid in row[1].split():
+                if uid not in userDict:
+                    missed += 1
+                    continue
+                add+=1
+                nid_u2 = userDict[uid]
+                G.AddEdge(nid_u1, nid_u2)
+    print missed, add
+    return G
+        
