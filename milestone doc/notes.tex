@@ -28,11 +28,11 @@ Event recommended systems are usually based on the user’s past history of even
 \section{Introduction}
 Recommendation engine has been widely used these days, especially for online social media, as it is a key factor to deliver personalized content and improve user experience. Helping user to get what they want and reducing the information load contributes to the revenue of most web services. In this case, recommendation engine attempts to recommend item of interest based on previous behavior or basic information of each user. To do that, most recommendation engines are running collaborative filtering on user item matrices or measuring the similarities between users to recommend items based on similar users. However, these methods suffer from the 'cold start' problem and the data sparsity problem that is very common in real world dataset. Moreover, as the recommendation engine is used in social network, few recommendation algorithms take the underlying network structure in a social network system into consideration.  
 
-To tackle these issue We intend to explore different approaches to evaluate to what extend the network structure combined with network information can help us accurately recommend events to users.
+To tackle these issue, we intend to explore different approaches to evaluate the performance of the network structure based approaches and the user behaviors based approaches. Then, we can understand what information help us to accurately recommend events to users. Finally, we proposed a hybrid approach based on random walk and collaborative filtering that can both take advantages of the underlying network structure, user behavior and user information
 
 The goal of the project is to predict what events users will be interested in based on user friendship, user actions, event metadata, and demographic information. Our final deliverable would be a event recommendation engine. The input of the system is organized into five part: (1) User-event (1) User (2) Events (3) Event attendees and (4) user-user connections. The output of the system is a list of events ordered from the ones in which you predict the user will be most interested to those in which the user will be least be interested.
 
-The rest of this paper is organized as follows:
+The rest of this paper is organized as follows: Section 2 describes our dataset and shows basic statistic of the dataset. Section 3 reviews related work. Section 5 details various approaches to build the event recommendation system. In section 6, we outlines how to evaluate our method.
 
 
 %\section{Relation with Reaction Paper}
@@ -53,8 +53,9 @@ The raw data is from an social network app based on events in Kaggle Startup Pro
 
 \begin{tabular}{|c|c|}
 \hline
-\# Nodes&15897435 \\ \hline
-\# Edges&30279252 \\ \hline
+\# Event&24144 \\ \hline
+\# User Nodes&38209 \\ \hline
+\# User-User Edge&217555 \\ \hline
 \end{tabular}
 \end{center}
 
@@ -106,10 +107,12 @@ The detail of the algorithm has been explained in previous section. We are parti
 It will be interesting to see how Supervised Random Walks performs compared with traditional machine learning algorithms. In this case, we model the recommendation system as a classification problem where given a pair of user and event, we predict whether the user is interested in the event. We plan to try different combination of features, and use logistic regression as the learning algorithm. 
 
 \subsection{Collaborative filtering}
-We construct a matrix, with users as the columns and events as the rows. We can design a matrix factorization based method to predict the score of an event for a specific user based on the latent factor we learned from the matrix.
+We construct a matrix, with users as the rows and events as the column. We can design a matrix factorization based method to predict the score of an event for a specific user based on the latent factor we learned from the matrix.
 
 \subsection{Hybrid Approach Based on Network Structure and Collaborative Filtering}
-As in [4], recommendation suffers from 'cold start' problem. Also, many recommendation techniques fail to take the network structure into consideration. To solve these problems, we need to fully exploit the user similarity information and the network structure information. Therefore, we proposed to combine the traditional collaborative filtering approach with random walk based network structure mining approach . 
+As in [4], recommendation suffers from 'cold start' problem. Also, many recommendation techniques fail to take the network structure into consideration. To solve these problems, we need to fully exploit the user similarity information and the network structure information. Therefore, we proposed to combine the traditional collaborative filtering approach with random walk based network structure mining approach. 
+
+
 
 \section{Evaluation and Test}
 For result evaluation, we will use the 30\% of the our dataset for testing (while keeping 70\% of the data for training). We are going to use the same evaluation criteria for our multiple approaches and make a fairly detailed comparison.
