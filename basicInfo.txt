@@ -2,3 +2,8 @@
 # user nodes: 38209
 # user-user edges: 217555
 # event-user edges: 7602
+
+# event nodes: 24144
+# user nodes: 683240
+# user-user edges: 1294653
+# event-user edges: 831137

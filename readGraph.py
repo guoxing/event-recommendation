@@ -28,15 +28,15 @@ def readUserDict():
                     #if uid not in userDict:
                         #userDict[uid] = count
                         #count += 1
-        #with open('data/event_attendees.csv') as f:
-            #f.readline()
-            #csvreader = csv.reader(f)
-            #for row in csvreader:
-                ## only care people who attend
-                #for uid in row[1].split():
-                    #if uid not in userDict:
-                        #userDict[uid] = count
-                        #count += 1
+        with open('data/event_attendees.csv') as f:
+            f.readline()
+            csvreader = csv.reader(f)
+            for row in csvreader:
+                # only care people who attend
+                for uid in row[1].split():
+                    if uid not in userDict:
+                        userDict[uid] = count
+                        count += 1
         with open(USER_DICT_F, 'w') as f:
             pickle.dump(userDict, f)
         return userDict
@@ -52,7 +52,7 @@ def readEventDict():
         with open('data/event_attendees.csv', 'r') as f:
             f.readline()
             csvreader = csv.reader(f)
-            count = 40000
+            count = 800000
             for row in csvreader:
                 if row[0] not in eventDict:
                     eventDict[row[0]] = count
@@ -65,14 +65,10 @@ def readGraph():
     G = snap.TNEANet()
     userDict = readUserDict()
     eventDict = readEventDict()
-    with open('data/users.csv', 'r') as f:
-        f.readline()
-        csvreader = csv.reader(f)
-        for row in csvreader:
-            nid_u = userDict[row[0]]
-            if not G.IsNode(nid_u):
-                G.AddNode(nid_u)
-                G.AddStrAttrDatN(nid_u, 'user', 'type')
+    #for uid, nid_u in userDict.items():
+        #if not G.IsNode(nid_u):
+            #G.AddNode(nid_u)
+            #G.AddStrAttrDatN(nid_u, 'user', 'type')
 
     with open('data/event_attendees.csv', 'r') as f:
         f.readline()
@@ -89,10 +85,10 @@ def readGraph():
                     missed += 1
                     continue
                 add+=1
-                nid_u = userDict[uid]
-                G.AddEdge(nid_e, nid_u)
-                G.AddEdge(nid_u, nid_e)
-    #print missed, add
+                #nid_u = userDict[uid]
+                #G.AddEdge(nid_e, nid_u)
+                #G.AddEdge(nid_u, nid_e)
+    print missed, add
     with open('data/user_friends.csv', 'r') as f:
         f.readline()
         csvreader = csv.reader(f)
@@ -105,10 +101,10 @@ def readGraph():
                     missed += 1
                     continue
                 add+=1
-                nid_u2 = userDict[uid]
-                G.AddEdge(nid_u1, nid_u2)
-                G.AddEdge(nid_u2, nid_u1)
-    #print missed, add
+                #nid_u2 = userDict[uid]
+                #G.AddEdge(nid_u1, nid_u2)
+                #G.AddEdge(nid_u2, nid_u1)
+    print missed, add
     #print G.GetNodes(), G.GetEdges()
     return G
 
