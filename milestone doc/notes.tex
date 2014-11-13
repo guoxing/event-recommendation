@@ -48,14 +48,23 @@ The raw data is from an social network app based on events in Kaggle Startup Pro
 
 \item User basic info: User metadata including user\_id, locale, birth year, gender, joined time, location, and timezone.
 
-\item User friend: User friendship constructs a undirected network while the users represent the nodes and the friendship relationships between users represents the edges. We further study the the basic statistic of the network.
+\item User friend: User friendship constructs a undirected network while the users represent the nodes and the friendship relationships between users represents the edges. 
+
+
+\item Events basic info: Events data contains the specific details of the event like creator of the event, start\_time of the event, city, state, zip, country, lat and lng.
+
+\item Event attendee: Event attendee contains information about which users attended various events. It is the information about the certainty they are going to the event: yes, maybe, invited, and no. Yes, maybe, invited, and no are representing users who indicated that they were going, maybe going, invited to, or not going to the event.
+\end{itemize}
+
+We further study the the basic statistic of our data.
 \begin{center}
 
 \begin{tabular}{|c|c|}
 \hline
 \# Event&24144 \\ \hline
-\# User Nodes&38209 \\ \hline
-\# User-User Edge&217555 \\ \hline
+\# User Nodes&683240\\ \hline
+\# User-User Edge&1294653\\ \hline
+\# Event-User&831137\\ \hline
 \end{tabular}
 \end{center}
 
@@ -66,14 +75,6 @@ The raw data is from an social network app based on events in Kaggle Startup Pro
 \label{fig:degdis}
 \end{center}
 \end{figure}
-
-
-
-\item Events basic info: Events data contains the specific details of the event like creator of the event, start\_time of the event, city, state, zip, country, lat and lng.
-
-\item Event attendee: Event attendee contains information about which users attended various events. It is the information about the certainty they are going to the event: yes, maybe, invited, and no. Yes, maybe, invited, and no are representing users who indicated that they were going, maybe going, invited to, or not going to the event.
-\end{itemize}
-
 
 
 \section{Related Work}
@@ -106,21 +107,59 @@ The detail of the algorithm has been explained in previous section. We are parti
 \subsection{Traditional Machine Learning}
 It will be interesting to see how Supervised Random Walks performs compared with traditional machine learning algorithms. In this case, we model the recommendation system as a classification problem where given a pair of user and event, we predict whether the user is interested in the event. We plan to try different combination of features, and use logistic regression as the learning algorithm. 
 
+We have not deliberatively work on feature selection. For each train data, which include user,event,invited,timestamp,interested,not\_interested, we combine interested and not\_interested as the output variable. If none of the two button are clicked, then classfied as 0; if not\_interested is clicked, then classfied as 1 and if interested is clicked, classify as 2. 
+
+We take user,event,invited,timestamp as training features. Additionally, we append corresponding user related information (user\_id, locale, birthyear, gender, joinedAt, location, timezone), event related information (event\_id, user\_id, start\_time, city, state, zip, country, lat, lng).
+
+The only new features we came up with is the percentage of the attendee that are user's friends. These attendees are classified in 4 classes as going to the event, not going to the event, invited to the event and maybe go to the event.
+
+
 \subsection{Collaborative filtering}
-We construct a matrix, with users as the rows and events as the column. We can design a matrix factorization based method to predict the score of an event for a specific user based on the latent factor we learned from the matrix.
+We construct a matrix $R$, with users as the rows and events as the column. We can design a matrix factorization based method to predict the score of an event for a specific user based on the latent factor we learned from the matrix.
+
+Given the sets of $M$ users, $L$ events respectively, $R \in \mathbb{R}^{M \times L}$ is the affiliation matrix between users and events, where $R_{ij} = -1$ means that the $i$th user is not interested in the $j$th event, $1$ means that the $i$th user is interested in the $j$th event, and $0$ otherwise. Given the information above, the aims of event recommendation is to recover a new affiliation matrix $R_{rec}$ denote the relationship between users and events, and more importantly recommend new groups to users based on $R_{rec}$.
+
+The traditional matrix factorization approaches for recommendation tries to factorize the affiliation matrix $R$ into two $ M\times K$ and $N\times K$ dimensional low-rank matrices $U$ and $G$ by:
+\begin{equation}
+\underset{U, G}{\operatorname{argmin}} \parallel R - UG^T\parallel_F +
+\lambda(\parallel U \parallel_F +  \parallel G \parallel_F)
+\end{equation}
+where $\parallel \cdot \parallel_F$ denotes the Frobenius norm and $K$ is dimensionality of the latent factors of both users and events. Besides, the regularization penalties
+ $\lambda(\parallel U \parallel_F +  \parallel G \parallel_F)$ is utilized in order to avoid over-fitting.
+Afterwards, the recommendation results can be obtained by calculating similarity between the latent
+factors of users and groups as $R_{rec} = UG^T$.
+
 
 \subsection{Hybrid Approach Based on Network Structure and Collaborative Filtering}
 As in [4], recommendation suffers from 'cold start' problem. Also, many recommendation techniques fail to take the network structure into consideration. To solve these problems, we need to fully exploit the user similarity information and the network structure information. Therefore, we proposed to combine the traditional collaborative filtering approach with random walk based network structure mining approach. 
 
+From collaborative filtering, we have $R_{rec_{ij}}$ that can be interpreted as the probability that user $i$ is interested in event $j$. From random work, we have the probability that one user is linked to another user. We are going to aggregate these two probabilities to a hybrid approach that combines the network structure and collaborative filtering.
 
 
-\section{Evaluation and Test}
+\section{Evaluation and Result}
 For result evaluation, we will use the 30\% of the our dataset for testing (while keeping 70\% of the data for training). We are going to use the same evaluation criteria for our multiple approaches and make a fairly detailed comparison.
 
 The output format would be in (user\_id, event\_id) format ordered by the intensity of interest of a user with user\_id to an event with event\_id.
 
-The evaluation metric for this project is Mean Average Precision (MAP)	. For more information, please refer to Appendix A.
+%The evaluation metric for this project is Mean Average Precision (MAP)	. For more information, please refer to Appendix A.
 
+We present our preliminary result using logistic regression.
+
+\begin{center}
+
+\begin{tabular}{|c|c|}
+\hline
+Method&Acurracy\\ \hline
+Logistic Regression&55\% \\ \hline
+\end{tabular}
+\end{center}
+
+\section{Future Work}
+So far, we have done the implementation of Random Walk and logistic regression. We plan to implement supervised random walk, collaborative filtering and integrate all the results as new features into the hybrid approach.
+
+Also, we should try to eliminate unrelated features among the given ones since unrelated features would overfit the model. We would use forward or backward feature selection. This could potentially improve the prediction result.
+
+For now, we use accuracy to measure the performance of the system. Since the data classes are very skewed (most of the training data and test data are both not labeled as interested or not\_interested), we would use MAP for the final evaluation metric.
 
 \section{Reference}
 [1] Event Recommendation Engine Challenge.
@@ -132,24 +171,24 @@ f
 
 \noindent[4] Khrouf, Houda, and Raphaël Troncy. "Hybrid event recommendation using linked data and user diversity." Proceedings of the 7th ACM conference on Recommender systems. ACM, 2013.
 
-\appendix
-\section{Mean Average Precision}
-Suppose there are m missing outbound edges from a user in a social graph, and you can predict up to 10 other nodes that the user is likely to follow. Then, by adapting the definition of average precision in IR, the average precision at $n$ for this user is:
-\begin{equation}
-ap@n=\sum_{k=1}^n P(k)/min(m,n)
-\end{equation}
-where if the denominator is zero, the result is set zero; $P(k)$ means the precision at cut-off $k$ in the item list, i.e., the ratio of number of users followed up to the position $k$ over the number $k$, and $P(k)$ equals 0 when $k$-th item is not followed upon recommendation; $n = 10$
+%\appendix
+%\section{Mean Average Precision}
+%Suppose there are m missing outbound edges from a user in a social graph, and you can predict up to 10 other nodes that the user is likely to follow. Then, by adapting the definition of average precision in IR, the average precision at $n$ for this user is:
+%\begin{equation}
+%ap@n=\sum_{k=1}^n P(k)/min(m,n)
+%\end{equation}
+%where if the denominator is zero, the result is set zero; $P(k)$ means the precision at cut-off $k$ in the item list, i.e., the ratio of number of users followed up to the position $k$ over the number $k$, and $P(k)$ equals 0 when $k$-th item is not followed upon recommendation; $n = 10$
 
-(1) If the user follows recommended nodes \#1 and \#3 along with another node that wasn't recommend, then $ap@10 = (1/1 + 2/3)/3 ≈ 0.56$
+%(1) If the user follows recommended nodes \#1 and \#3 along with another node that wasn't recommend, then $ap@10 = (1/1 + 2/3)/3 ≈ 0.56$
 
-(2) If the user follows recommended nodes \#1 and \#2 along with another node that wasn't recommend, then $ap@10 = (1/1 + 2/2)/3 ≈ 0.67$
+%(2) If the user follows recommended nodes \#1 and \#2 along with another node that wasn't recommend, then $ap@10 = (1/1 + 2/2)/3 ≈ 0.67$
 
-(3) If the user follows recommended nodes \#1 and \#3 and has no other missing nodes, then $ap@10 = (1/1 + 2/3)/2 ≈ 0.83$
+%(3) If the user follows recommended nodes \#1 and \#3 and has no other missing nodes, then $ap@10 = (1/1 + 2/3)/2 ≈ 0.83$
 
-The mean average precision for $N$ users at position $n$ is the average of the average precision of each user, i.e.,
-\begin{equation}
-MAP@n=\sum_{i=1}^N ap@n_i /N
-\end{equation}
+%The mean average precision for $N$ users at position $n$ is the average of the average precision of each user, i.e.,
+%\begin{equation}
+%MAP@n=\sum_{i=1}^N ap@n_i /N
+%\end{equation}
 
 \end{document}
 
