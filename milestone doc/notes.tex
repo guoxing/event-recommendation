@@ -56,9 +56,11 @@ The raw data is from an social network app based on events in Kaggle Startup Pro
 \item Event attendee: Event attendee contains information about which users attended various events. It is the information about the certainty they are going to the event: yes, maybe, invited, and no. Yes, maybe, invited, and no are representing users who indicated that they were going, maybe going, invited to, or not going to the event.
 \end{itemize}
 
-We further study the the basic statistic of our data.
-\begin{center}
+We further study the the basic statistic of our data. Figure \ref{fig:degdis} presents the degree distribution of user network.
 
+\begin{table}
+\begin{center}
+\caption{Basic Statistic of our data}
 \begin{tabular}{|c|c|}
 \hline
 \# Event&24144 \\ \hline
@@ -68,10 +70,13 @@ We further study the the basic statistic of our data.
 \end{tabular}
 \end{center}
 
+\end{table}
+
+
 \begin{figure}[h]
 \begin{center}
 \includegraphics[scale=0.4]{inDeg.png}
-\caption{Degree Distribution of User Network}
+
 \label{fig:degdis}
 \end{center}
 \end{figure}
@@ -145,6 +150,7 @@ The output format would be in (user\_id, event\_id) format ordered by the intens
 
 We present our preliminary result using logistic regression.
 
+
 \begin{center}
 
 \begin{tabular}{|c|c|}
@@ -153,6 +159,7 @@ Method&Acurracy\\ \hline
 Logistic Regression&55\% \\ \hline
 \end{tabular}
 \end{center}
+
 
 \section{Future Work}
 So far, we have done the implementation of Random Walk and logistic regression. We plan to implement supervised random walk, collaborative filtering and integrate all the results as new features into the hybrid approach.
